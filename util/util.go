@@ -13,7 +13,7 @@ func BuildFilePath(day int, example bool) string {
 	return fmt.Sprintf("./day%d/puzzle.txt", day)
 }
 
-func Read(path string) []string {
+func ReadFile(path string) []string {
 
 	file, err := os.Open(path)
 	if err != nil {
