@@ -3,7 +3,9 @@ package util
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
+	"strconv"
 )
 
 func BuildFilePath(day int, example bool) string {
@@ -34,4 +36,13 @@ func ReadFile(path string) *[]string {
 	}
 
 	return &lines
+}
+
+func ConvertToInt(str string) int {
+	number, err := strconv.Atoi(str)
+	if err != nil {
+		log.Printf("could not transform %s to an int", str)
+		os.Exit(1)
+	}
+	return number
 }
