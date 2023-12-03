@@ -3,7 +3,6 @@ package day3
 import (
 	"fmt"
 	"github.com/FSpruhs/advent-of-code-2023/util"
-	"log"
 	"unicode"
 )
 
@@ -40,7 +39,7 @@ func (n *number) isNeighbors(neighbor bool) {
 	n.neighbors = neighbor
 }
 
-func (g gear) isAdjacent(input number) bool {
+func (g *gear) isAdjacent(input number) bool {
 	for i := input.begin.yCord; i <= input.end.yCord; i++ {
 		if g.coordinate.xCord-input.begin.xCord > 1 || g.coordinate.xCord-input.begin.xCord < -1 {
 			return false
@@ -78,7 +77,6 @@ func Solve(filePath string) {
 	gears := findGears(input)
 	findNeighbors(&numbers, input)
 	findGearsNeighbors(&gears, &numbers)
-	log.Println(gears)
 	fmt.Printf("Solution of day 3 part 1: %d\n", sumNumberValuesWithNeighbors(&numbers))
 	fmt.Printf("Solution of day 3 part 2: %d\n", sumGearValuesWithTwoNeighbors(&gears))
 }
@@ -122,7 +120,7 @@ func findGears(input *[]string) []gear {
 
 func sumNumberValuesWithNeighbors(numbers *[]number) int {
 	result := 0
-	for index, _ := range *numbers {
+	for index := range *numbers {
 		if (*numbers)[index].neighbors == true {
 			result += getNumberValue((*numbers)[index])
 		}
@@ -135,36 +133,49 @@ func getNumberValue(n number) int {
 }
 
 func findNeighbors(numbers *[]number, input *[]string) {
-	for index, _ := range *numbers {
+	for index := range *numbers {
 		findNeighbor(&(*numbers)[index], input)
 	}
 }
 
-func findNeighbor(value *number, input *[]string) {
-	beginX := 0
-	if value.begin.xCord == 0 {
-		beginX = 0
-	} else {
-		beginX = value.begin.xCord - 1
-	}
-	endX := 0
-	if value.end.xCord >= len(*input)-1 {
-		endX = value.end.xCord
-	} else {
-		endX = value.end.xCord + 1
-	}
-	beginY := 0
-	if value.begin.yCord == 0 {
-		beginY = 0
-	} else {
-		beginY = value.begin.yCord - 1
-	}
-	endY := 0
+func calculateBeginEndIndex(value *number, input *[]string) (int, int, int, int) {
+	beginX := calculateBeginX(value)
+	endX := calculateEndX(value, input)
+	beginY := calculateBeginY(value)
+	endY := calculateEndY(value, input)
+	return beginX, endX, beginY, endY
+}
+
+func calculateEndY(value *number, input *[]string) int {
 	if value.end.yCord >= len((*input)[0])-1 {
-		endY = value.end.yCord
-	} else {
-		endY = value.end.yCord + 1
+		return value.end.yCord
 	}
+	return value.end.yCord + 1
+}
+
+func calculateBeginY(value *number) int {
+	if value.begin.yCord == 0 {
+		return 0
+	}
+	return value.begin.yCord - 1
+}
+
+func calculateEndX(value *number, input *[]string) int {
+	if value.end.xCord >= len(*input)-1 {
+		return value.end.xCord
+	}
+	return value.end.xCord + 1
+}
+
+func calculateBeginX(value *number) int {
+	if value.begin.xCord == 0 {
+		return 0
+	}
+	return value.begin.xCord - 1
+}
+
+func findNeighbor(value *number, input *[]string) {
+	beginX, endX, beginY, endY := calculateBeginEndIndex(value, input)
 	for i := beginX; i <= endX; i++ {
 		for j := beginY; j <= endY; j++ {
 			if !unicode.IsDigit(rune((*input)[i][j])) && (*input)[i][j] != pointSymbol {
