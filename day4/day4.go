@@ -19,12 +19,36 @@ func clearString(str *string) string {
 func Solve(filePath string) {
 	input := util.ReadFile(filePath)
 	resultPartOne := 0
-	for _, line := range *input {
+	cardPile := initCarPile(len(*input))
+	for cardNumber, line := range *input {
 		card, givenNumbers := readLine(line)
 		winingNumbersInGivenNumbers := countWiningNumbersInGivenNumbers(card, givenNumbers)
 		resultPartOne += calculateValue(winingNumbersInGivenNumbers)
+		for i := 1; i <= winingNumbersInGivenNumbers; i++ {
+			if cardNumber+1 <= len(*input) {
+				cardPile[cardNumber+1+i] += cardPile[cardNumber+1]
+			}
+
+		}
 	}
 	fmt.Printf("Solution of day 4 part 1 is %d\n", resultPartOne)
+	fmt.Printf("Solution of day 4 part 2 is %d\n", calculateCardPileValue(cardPile))
+}
+
+func initCarPile(length int) map[int]int {
+	cardPile := map[int]int{}
+	for i := 0; i < length; i++ {
+		cardPile[i+1] = 1
+	}
+	return cardPile
+}
+
+func calculateCardPileValue(pile map[int]int) int {
+	counter := 0
+	for _, numberOfCards := range pile {
+		counter += numberOfCards
+	}
+	return counter
 }
 
 func calculateValue(count int) int {
