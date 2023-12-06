@@ -46,3 +46,18 @@ func ConvertToInt(str string) int {
 	}
 	return number
 }
+
+func StringSliceToIntSlice(input []string) []int {
+	var intSlice []int
+
+	// Durch jeden String im []string-Slice iterieren und in einen Integer umwandeln
+	for _, str := range input {
+		num, err := strconv.Atoi(str)
+		if err != nil {
+			fmt.Printf("Fehler beim Konvertieren von %s zu int: %v\n", str, err)
+			os.Exit(1)
+		}
+		intSlice = append(intSlice, num)
+	}
+	return intSlice
+}
