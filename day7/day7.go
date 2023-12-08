@@ -45,11 +45,34 @@ type hand struct {
 	bid      int
 }
 
-func findHandType(cards [5]card) handType {
+func handtypeForPartTwo(cards [5]card) handType {
+	cardMap := createCardMap(cards)
+	if cardMap[joker] == 0 || cardMap[joker] == 5 {
+		return findHandType(cardMap)
+	}
+	maxCards := 0
+	tempCardKey := joker
+	for key, value := range cardMap {
+		if key != joker && value > maxCards {
+			tempCardKey = key
+			maxCards = value
+		}
+	}
+	cardMap[tempCardKey] = cardMap[tempCardKey] + cardMap[joker]
+	delete(cardMap, joker)
+	return findHandType(cardMap)
+}
+
+func createCardMap(cards [5]card) map[card]int {
 	cardMap := map[card]int{}
 	for _, c := range cards {
 		cardMap[c] = cardMap[c] + 1
 	}
+	return cardMap
+}
+
+func findHandType(cardMap map[card]int) handType {
+	log.Println(cardMap)
 	switch len(cardMap) {
 	case 1:
 		return fiveOfAKind
@@ -62,7 +85,7 @@ func findHandType(cards [5]card) handType {
 	case 5:
 		return highCard
 	default:
-		log.Printf("Can not find card type for %s", cards)
+		log.Printf("Can not find card type for %d", cardMap)
 		os.Exit(1)
 	}
 	return fiveOfAKind
@@ -90,9 +113,13 @@ func newHand(cardsString string, initBid int) hand {
 	initCards := toCards(cardsString)
 	return hand{
 		bid:      initBid,
-		handtype: findHandType(initCards),
+		handtype: findHandType(createCardMap(initCards)),
 		cards:    initCards,
 	}
+}
+
+func (h *hand) setHandtype(ht handType) {
+	h.handtype = ht
 }
 
 func toCards(cardString string) [5]card {
@@ -153,14 +180,40 @@ func Solve(filePath string) {
 	})
 	solutionPartOne := 0
 	for i, h := range hands {
-		log.Println(h)
 		solutionPartOne += h.bid * (i + 1)
 	}
 
+	solutionPartTwo := 0
+	for index := range hands {
+		hands[index].setHandtype(handtypeForPartTwo(hands[index].cards))
+	}
+	sort.SliceStable(hands, func(i, j int) bool {
+		if hands[i].handtype != hands[j].handtype {
+			return hands[i].handtype < hands[j].handtype
+		}
+		for index := 0; index < 5; index++ {
+			if hands[i].cards[index] != hands[j].cards[index] {
+				if hands[i].cards[index] == joker {
+					return true
+				}
+				if hands[j].cards[index] == joker {
+					return false
+				}
+				return hands[i].cards[index] < hands[j].cards[index]
+			}
+		}
+		return false
+	})
+	for i, h := range hands {
+		solutionPartTwo += h.bid * (i + 1)
+	}
+	log.Println(hands)
 	fmt.Printf("Solution of day 7 part 1: %d\n", solutionPartOne)
+	fmt.Printf("Solution of day 7 part 2: %d\n", solutionPartTwo)
 }
 
 func readLine(line string) (string, int) {
 	splittedLine := strings.Split(line, " ")
 	return splittedLine[0], util.ConvertToInt(splittedLine[1])
+
 }
