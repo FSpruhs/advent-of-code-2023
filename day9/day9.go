@@ -3,6 +3,7 @@ package day9
 import (
 	"fmt"
 	"github.com/FSpruhs/advent-of-code-2023/util"
+	"log"
 	"strings"
 )
 
@@ -31,6 +32,7 @@ func decodedLineIsZeroOnly(line []int) bool {
 func Solve(filePath string) {
 	input := util.ReadFile(filePath)
 	solutionPartOne := 0
+	solutionPartTwo := 0
 	for _, line := range *input {
 		numberLine := util.StringSliceToIntSlice(strings.Split(line, " "))
 		decodedLine := [][]int{numberLine}
@@ -38,9 +40,15 @@ func Solve(filePath string) {
 		for i := len(decodedLine) - 2; i >= 0; i-- {
 			decodedLine[i] = append(decodedLine[i], decodedLine[i][len(decodedLine[i])-1]+decodedLine[i+1][len(decodedLine[i+1])-1])
 		}
+		for i := len(decodedLine) - 2; i >= 0; i-- {
+			decodedLine[i] = append([]int{-(decodedLine[i+1][0] - decodedLine[i][0])}, decodedLine[i]...)
+		}
+		log.Println(decodedLine)
 		solutionPartOne += decodedLine[0][len(decodedLine[0])-1]
+		solutionPartTwo += decodedLine[0][0]
 	}
 
 	fmt.Printf("Solution of day 9 part 1 is: %d\n", solutionPartOne)
+	fmt.Printf("Solution of day 9 part 2 is: %d\n", solutionPartTwo)
 
 }
