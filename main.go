@@ -9,6 +9,7 @@ import (
 	"github.com/FSpruhs/advent-of-code-2023/day5"
 	"github.com/FSpruhs/advent-of-code-2023/day6"
 	"github.com/FSpruhs/advent-of-code-2023/day7"
+	"github.com/FSpruhs/advent-of-code-2023/day8"
 	"github.com/FSpruhs/advent-of-code-2023/util"
 	"log"
 	"os"
@@ -39,6 +40,8 @@ func main() {
 		day6.Solve(filePath)
 	case 7:
 		day7.Solve(filePath)
+	case 8:
+		day8.Solve(filePath)
 	default:
 		log.Printf("can not find puzzle for day %d", *flagDay)
 		os.Exit(1)
