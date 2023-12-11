@@ -53,45 +53,7 @@ func Solve(filePath string) {
 		comeFrom, currentPosition = nextPosition(comeFrom, currentPosition, grid)
 		counter++
 	}
-	log.Println(firstComeFrom, comeFrom)
-	if firstComeFrom == south && comeFrom == south {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "|"
-	}
-	if firstComeFrom == north && comeFrom == north {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "|"
-	}
-	if firstComeFrom == east && comeFrom == east {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "-"
-	}
-	if firstComeFrom == west && comeFrom == west {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "-"
-	}
-	if firstComeFrom == south && comeFrom == east {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "L"
-	}
-	if firstComeFrom == west && comeFrom == north {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "L"
-	}
-	if firstComeFrom == north && comeFrom == west {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "7"
-	}
-	if firstComeFrom == east && comeFrom == south {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "7"
-	}
-	if firstComeFrom == north && comeFrom == east {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "F"
-	}
-	if firstComeFrom == west && comeFrom == south {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "F"
-	}
-	if firstComeFrom == south && comeFrom == west {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "J"
-	}
-	if firstComeFrom == east && comeFrom == north {
-		stretchedGrid[start.row*2+1][start.column*2+1] = "J"
-	}
-
-	//stretchedGrid[start.row*2+1][start.column*2+1] = replaceStart(stretchedGrid, start)
+	stretchedGrid[start.row*2+1][start.column*2+1] = replaceStartSymbol(firstComeFrom, comeFrom)
 
 	for i := 2; i < len(stretchedGrid); i += 2 {
 		for j := 0; j < len(stretchedGrid[0]); j++ {
@@ -124,6 +86,46 @@ func Solve(filePath string) {
 	}
 	fmt.Printf("Solution of day 10 part 1 is: %d\n", counter/2)
 	fmt.Printf("Solution of day 10 part 2 is: %d\n", solutionPartTwo)
+}
+
+func replaceStartSymbol(firstComeFrom direction, comeFrom direction) string {
+	if firstComeFrom == south && comeFrom == south {
+		return "|"
+	}
+	if firstComeFrom == north && comeFrom == north {
+		return "|"
+	}
+	if firstComeFrom == east && comeFrom == east {
+		return "-"
+	}
+	if firstComeFrom == west && comeFrom == west {
+		return "-"
+	}
+	if firstComeFrom == south && comeFrom == east {
+		return "L"
+	}
+	if firstComeFrom == west && comeFrom == north {
+		return "L"
+	}
+	if firstComeFrom == north && comeFrom == west {
+		return "7"
+	}
+	if firstComeFrom == east && comeFrom == south {
+		return "7"
+	}
+	if firstComeFrom == north && comeFrom == east {
+		return "F"
+	}
+	if firstComeFrom == west && comeFrom == south {
+		return "F"
+	}
+	if firstComeFrom == south && comeFrom == west {
+		return "J"
+	}
+	if firstComeFrom == east && comeFrom == north {
+		return "J"
+	}
+	return "."
 }
 
 func fill(grid [][]string) [][]string {
@@ -193,47 +195,6 @@ func fill(grid [][]string) [][]string {
 	}
 
 	return grid
-}
-
-func replaceStart(grid [][]string, startInput position, from direction) string {
-	start := position{
-		row:    startInput.row*2 + 1,
-		column: startInput.column*2 + 1,
-	}
-	if from == south {
-
-	}
-	if start.row-2 >= 0 && start.column-2 >= 0 {
-		if grid[start.row-2][start.column] != "." && grid[start.row][start.column-2] != "." {
-			return "L"
-		}
-	}
-	if start.row-2 >= 0 && start.column+2 <= len(grid[0]) {
-		if grid[start.row-2][start.column] != "." && grid[start.row][start.column+2] != "." {
-			return "J"
-		}
-	}
-	if start.row+2 <= len(grid) && start.column-2 >= 0 {
-		if grid[start.row+2][start.column] != "." && grid[start.row][start.column-2] != "." {
-			return "7"
-		}
-	}
-	if start.row+2 <= len(grid) && start.column+2 <= len(grid[0]) {
-		if grid[start.row+2][start.column] != "." && grid[start.row][start.column+2] != "." {
-			return "F"
-		}
-	}
-	if start.row+2 <= len(grid) && start.row-2 >= 0 {
-		if grid[start.row+2][start.column] != "." && grid[start.row-2][start.column] != "." {
-			return "|"
-		}
-	}
-	if start.column+2 <= len(grid[0]) && start.column-2 >= 0 {
-		if grid[start.row][start.column+2] != "." && grid[start.row][start.column-2] != "." {
-			return "-"
-		}
-	}
-	return "."
 }
 
 func nextPosition(from direction, currentPosition position, grid [][]string) (direction, position) {
